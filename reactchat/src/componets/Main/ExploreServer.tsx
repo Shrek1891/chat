@@ -15,7 +15,7 @@ import {
     ListItemIcon,
     ListItemText,
     Avatar,
-    ListItemButton,
+
 } from "@mui/material";
 import {MEDIA_URL} from "../../config.ts";
 
@@ -31,7 +31,7 @@ interface Server {
 const ExploreServer = () => {
     const {categoryName} = useParams()
     const url = categoryName ? `/server/select/?category=${categoryName}` : `/server/select/`
-    const {data, loading, error, fetchData} = useCrud<Server>([], url)
+    const {data,  fetchData} = useCrud<Server>([], url)
     useEffect(() => {
         fetchData()
     }, [categoryName])

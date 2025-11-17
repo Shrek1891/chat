@@ -21,9 +21,9 @@ interface Category {
     icon: string;
 }
 
-const ExploreCategories = () => {
+const ServerChannell = () => {
     const theme = useTheme()
-    const isDarkMode=theme.palette.mode==="dark"
+    const isDarkMode = theme.palette.mode === "dark"
     const {fetchData, data, error, loading} = useCrud<Category>(
         [],
         "/server/category/"
@@ -72,7 +72,7 @@ const ExploreCategories = () => {
                                                     height: 25,
                                                     display: "block",
                                                     margin: "auto",
-                                                    filter:isDarkMode ? "inherit(100%)" : "none"
+                                                    filter: isDarkMode ? "inherit(100%)" : "none"
                                                 }}
                                             />
                                             <Typography variant="body2" noWrap>
@@ -81,7 +81,8 @@ const ExploreCategories = () => {
                                         </ListItemAvatar>
                                     </ListItemIcon>
                                     <ListItemText
-                                        primary={<Typography paddingLeft={2} variant="body2" noWrap>{category.name}</Typography>}
+                                        primary={<Typography paddingLeft={2} variant="body2"
+                                                             noWrap>{category.name}</Typography>}
                                         secondary={<Typography variant="body2" paddingLeft={2}
                                                                noWrap>{category.description}</Typography>}
                                     />
@@ -96,4 +97,4 @@ const ExploreCategories = () => {
     )
 }
 
-export default ExploreCategories
+export default ServerChannell

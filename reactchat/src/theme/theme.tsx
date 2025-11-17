@@ -25,11 +25,15 @@ declare module "@mui/material/styles" {
         secondaryDraw: {
             width: number;
         };
+
     }
 }
 
-export const createMuiTheme = () => {
+export const createMuiTheme = (mode: "light" | "dark") => {
     let theme = createTheme({
+        palette: {
+            mode,
+        },
         typography: {
             fontFamily: ["IBM Plex Sans", "sans-serif"].join(","),
         },

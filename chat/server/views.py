@@ -1,5 +1,7 @@
+from django.db.models import Count
 from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
+from jsonschema import ValidationError
 from rest_framework import viewsets, serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -16,8 +18,10 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+
 class CategoryListViewSet(viewsets.ViewSet):
     queryset = Category.objects.all()
+
     @extend_schema(
         responses=CategorySerializer,
     )
@@ -30,7 +34,8 @@ class CategoryListViewSet(viewsets.ViewSet):
 # Create your views here.
 class ServerListViewSet(viewsets.ViewSet):
     queryset = Server.objects.all()
-    #permission_classes = [IsAuthenticated]
+
+    # permission_classes = [IsAuthenticated]
 
     @list_server_docs
     def list(self, request):
@@ -51,25 +56,23 @@ class ServerListViewSet(viewsets.ViewSet):
         qty = request.query_params.get('qty')
         by_user = request.query_params.get('by_user') == 'true'
         by_server_id = request.query_params.get('by_server_id')
+        with_num_members = request.query_params.get("with_num_members") == "true"
         if by_user and not request.user.is_authenticated:
             return Response({"detail": "Authentication credentials were not provided."}, status=401)
         if category is not None:
             queryset = self.queryset.filter(category__name=category)
-        if qty is not None:
-            queryset = self.queryset[: int(qty)]
         if by_user:
             user_id = request.user.id
             queryset = self.queryset.filter(members__id=user_id)
-        if by_server_id is not None:
-            try:
-                queryset = self.queryset.get(id=by_server_id)
-                if queryset.members.filter(id=request.user.id).exists():
-                    queryset = [queryset]
-                else:
-                    raise Exception("You are not a member of this server")
-            except Server.DoesNotExist:
-                queryset = []
-                return Response({"detail": "Server not found"}, status=404)
-        number_of_members = queryset.count()
-        serializer = ServerSerializer(queryset, many=True, context={'number_of_members': number_of_members})
+        try:
+            self.queryset = self.queryset.filter(id=by_server_id)
+            if not self.queryset.exists():
+                raise ValidationError(detail=f"Server with id {by_server_id} not found")
+        except ValueError:
+            raise ValidationError(detail="Server value error")
+        if qty:
+            self.queryset = self.queryset[: int(qty)]
+        if with_num_members:
+            self.queryset = self.queryset.annotate(num_members=Count("member"))
+        serializer = ServerSerializer(self.queryset, many=True, context={"num_members": with_num_members})
         return Response(serializer.data)

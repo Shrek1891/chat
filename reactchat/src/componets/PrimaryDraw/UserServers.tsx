@@ -25,11 +25,13 @@ type Props = {
     open: boolean
 }
 
-const PopularChannels: React.FC<Props> = ({open}) => {
-    const {data, loading, error, fetchData} = useCrud<Server>([], "/server/select/")
-    useEffect(() => {
-        fetchData()
-    }, [])
+interface ServerChannelsProps {
+    data: Server[]
+}
+
+const UserServers: React.FC<Props & ServerChannelsProps> = ({open, data}) => {
+    
+
     return (
         <>
             <Box sx={{
@@ -44,7 +46,7 @@ const PopularChannels: React.FC<Props> = ({open}) => {
                         display: open ? "block" : "none",
                     }}
                 >
-                    Popular Channels
+                    Servers
                 </Typography>
             </Box>
             <List>
@@ -89,4 +91,4 @@ const PopularChannels: React.FC<Props> = ({open}) => {
 
 }
 
-export default PopularChannels
+export default UserServers
