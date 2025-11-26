@@ -18,8 +18,6 @@ import ServerChanell from "../componets/SecondaryDraw/ServerChanell.tsx";
 const Server = () => {
     const navigate = useNavigate();
     const {serverId, channelId} = useParams();
-    console.log(serverId)
-
     const {data, error, loading, fetchData} = useCrud<Server>(
         [],
         `/server/select/?by_server_id=${serverId}`
@@ -33,26 +31,26 @@ const Server = () => {
     useEffect(() => {
         fetchData()
     }, []);
-
     // Check if the channelId is valid by searching for it in the data fetched from the API
     const isChannel = (): Boolean => {
         if (!channelId) {
             return true;
         }
 
-        return data.some((server) =>
-            server.channel_server.some(
+        return [...data].some((server) =>
+            server.chanel_server.some(
                 (channel) => channel.id === parseInt(channelId)
             )
         );
     };
-
     useEffect(() => {
         if (!isChannel()) {
             navigate(`/server/${serverId}`);
         }
     }, [isChannel, channelId]);
-
+    if (loading) {
+        return <div>Loading...</div>;
+    }
     return (
         <Box sx={{display: "flex"}}>
             <CssBaseline/>
@@ -61,10 +59,10 @@ const Server = () => {
                 <UserServers open={false} data={data}/>
             </PrimaryDraw>
             <SecondaryDraw>
-                <ServerChanell />
+                <ServerChanell data={data}/>
             </SecondaryDraw>
             <Main>
-                <MessageInterface/>
+                <MessageInterface data={data}/>
             </Main>
         </Box>
     );

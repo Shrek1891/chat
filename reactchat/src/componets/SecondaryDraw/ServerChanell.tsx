@@ -11,26 +11,19 @@ import {
     Typography
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {MEDIA_URL} from "../../config.ts";
+import type {Server} from "../../@types/server";
 
-interface Category {
-    id: number;
-    name: string;
-    description: string;
-    icon: string;
+interface ServerChannels {
+    data: Server[]
 }
 
-const ServerChannell = () => {
+const ServerChannell = ({data}: ServerChannels) => {
     const theme = useTheme()
+    const {serverId} = useParams()
+    const server_name = data?.[0]?.name ?? "Server"
     const isDarkMode = theme.palette.mode === "dark"
-    const {fetchData, data, error, loading} = useCrud<Category>(
-        [],
-        "/server/category/"
-    )
-    useEffect(() => {
-        fetchData()
-    }, [])
     return (
         <>
             <Box sx={{
@@ -45,52 +38,44 @@ const ServerChannell = () => {
                 backgroundColor: theme.palette.background.default,
 
             }}>
-                <h5>Explore Categories</h5>
+                <Typography
+                    variant="body1"
+                    style={{
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                    }}
+                >
+                    {server_name}
+                </Typography>
             </Box>
             <List>
                 {
-                    data?.map((category) => (
-                        <ListItem
-                            key={category.id}
-                            disablePadding dense={true}
-                            sx={{
-                                display: "block",
-                            }}
-                        >
-                            <Link
-                                to={`/explore/${category.name}`}
-                                style={{textDecoration: "none", color: "inherit"}}
+                    data?.flatMap((obj) => (
+                        obj.chanel_server.map((category) => (
+                            <ListItem
+                                key={category.id}
+                                disablePadding dense={true}
+                                sx={{
+                                    display: "block",
+                                }}
                             >
-                                <ListItemButton sx={{minHeight: 48}}>
-                                    <ListItemIcon sx={{minWidth: 0, justifyContent: "center", alignItems: "center"}}>
-                                        <ListItemAvatar sx={{minWidth: 0}}>
-                                            <img
-                                                src={`${MEDIA_URL}${category.icon}`}
-                                                alt={category.name}
-                                                style={{
-                                                    width: 25,
-                                                    height: 25,
-                                                    display: "block",
-                                                    margin: "auto",
-                                                    filter: isDarkMode ? "inherit(100%)" : "none"
-                                                }}
-                                            />
-                                            <Typography variant="body2" noWrap>
-                                                {category.name}
-                                            </Typography>
-                                        </ListItemAvatar>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={<Typography paddingLeft={2} variant="body2"
-                                                             noWrap>{category.name}</Typography>}
-                                        secondary={<Typography variant="body2" paddingLeft={2}
-                                                               noWrap>{category.description}</Typography>}
-                                    />
-                                </ListItemButton>
-                            </Link>
-                        </ListItem>
-                    ))
-                }
+                                <Link
+                                    to={`/server/${serverId}/${category.id}`}
+                                    style={{textDecoration: "none", color: "inherit"}}
+                                >
+                                    <ListItemButton sx={{minHeight: 48}}>
+                                        <ListItemText
+                                            primary={<Typography paddingLeft={2} variant="body2"
+                                                                 noWrap>{category.name}</Typography>}
+                                            secondary={<Typography variant="body2" paddingLeft={2}
+                                                                   noWrap>{category.topic}</Typography>}
+                                        />
+                                    </ListItemButton>
+                                </Link>
+                            </ListItem>
+                        ))
+                    ))}
 
             </List>
         </>

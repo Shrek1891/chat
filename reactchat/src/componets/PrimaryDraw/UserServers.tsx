@@ -30,8 +30,6 @@ interface ServerChannelsProps {
 }
 
 const UserServers: React.FC<Props & ServerChannelsProps> = ({open, data}) => {
-    
-
     return (
         <>
             <Box sx={{

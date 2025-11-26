@@ -5,11 +5,11 @@ export interface Server {
     description: string;
     icon: string;
     category: string;
-    channel_server: {
+    chanel_server: {
         id: number;
         name: string;
         server: string;
         topic: string;
         owner: string;
-    }
+    }[]
 }

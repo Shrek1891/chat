@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'server',
     'corsheaders',
     'channels',
+    'webchat'
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,8 @@ REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
@@ -154,9 +156,6 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:8000",
-    "ws://127.0.0.1:8000/ws/test",
-    "ws://127.0.0.1:8000/ws/test"
-
 ]
 
 CHANNEL_LAYERS = {
