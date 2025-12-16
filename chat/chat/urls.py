@@ -24,14 +24,17 @@ from server.views import ServerListViewSet
 from server.views import CategoryListViewSet
 from webchat.views import MessageListViewSet
 from webchat.consume import WebChatConsumer
+from account.views import AccountViewSet, JWTCookieTokenObtainPairView
 
-from account.views import AccountViewSet
+from account.views import LogoutAPIView
+
+from account.views import RegisterView
 
 router = DefaultRouter()
 router.register("api/server/select", ServerListViewSet)
 router.register("api/server/category", CategoryListViewSet)
 router.register("api/messages", MessageListViewSet, basename="messages")
-router.register("api/account",AccountViewSet,basename="users")
+router.register("api/account", AccountViewSet, basename="users")
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -43,11 +46,14 @@ urlpatterns = [
                   path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
                   path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
                   path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-                  path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  path('api/token/', JWTCookieTokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  path('api/logout/', LogoutAPIView.as_view(), name='logout'),
+                  path('api/register/', RegisterView.as_view(), name='register'),
               ] + router.urls
 
 websocket_urlpatterns = [path("<str:serverId>/<str:channelId>", WebChatConsumer.as_asgi())]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

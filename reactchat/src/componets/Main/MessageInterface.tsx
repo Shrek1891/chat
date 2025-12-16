@@ -8,13 +8,9 @@ import MessageInterfaceChannels from "./MessageInterfaceChannels.tsx";
 import theme from "../../theme/theme.tsx";
 import {useTheme} from "@mui/material/styles";
 import Scroll from "./Scroll.tsx";
+import {useAuthService} from "../../services/AuthServices.ts";
+import useChatWebSocket from "../../services/chatService.ts";
 
-interface Message {
-    id: number;
-    sender: string;
-    content: string;
-    timestamp: string;
-}
 
 interface ServerChannelProps {
     data: Server[];
@@ -31,34 +27,8 @@ const messageInterface = ({data}: ServerChannelProps) => {
     const theme = useTheme();
     const server_name = data?.[0]?.name ?? "Server"
     const server_description = data?.[0]?.description ?? ""
-    const [newMessage, setNewMessage] = useState<Message[]>([])
-    const [message, setMessage] = useState("")
     const {serverId, channelId} = useParams()
-    const socketUrl = channelId ? `ws://127.0.0.1:8000/${serverId}/${channelId}` : null
-    const {fetchData} = useCrud<Server>([], `/messages/?channel_id=${channelId}`)
-    const {sendJsonMessage} = useWebSocket(socketUrl, {
-        onOpen: async () => {
-            console.log("Connected")
-            try {
-                const response = await fetchData()
-                setNewMessage([])
-                setNewMessage(Array.isArray(response) ? response : [])
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        onClose: () => {
-            console.log("Disconnected")
-        },
-        onError: () => {
-            console.log("Error")
-        },
-        onMessage: (message) => {
-            const data = JSON.parse(message.data)
-            setNewMessage(prev => [...prev, data.new_message])
-            setMessage("")
-        }
-    })
+    const {newMessage, sendJsonMessage, message, setMessage} = useChatWebSocket(serverId, channelId)
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         sendJsonMessage({type: "message", message} as SendMessageDate);

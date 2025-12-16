@@ -30,7 +30,7 @@ const ToggleColorMode: React.FC<ToggleColorModeProps> = ({children}) => {
 
     const theme = React.useMemo(() => createMuiTheme(mode), [mode]);
 
-    console.log("Retrieved mode:", mode);
+
 
     return (
         <ColorModeContext.Provider value={colorMode}>
