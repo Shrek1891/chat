@@ -3,6 +3,7 @@ import {useState} from "react";
 import {API_URL} from "../config.ts";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import * as console from "node:console";
 
 export function useAuthService(): AuthServicesProps {
     const navigate = useNavigate()
@@ -88,7 +89,17 @@ export function useAuthService(): AuthServicesProps {
         }
     }
     const register = async (username: string, password: string) => {
+        console.log(username, password)
         try {
+
+            const res =await fetch("http://127.0.0.1:8000/api/register/",{
+                method:"POST",
+                headers:{"Content-Type": "application/json"},
+                body:JSON.stringify({username,password}),
+                credentials: 'include'
+            })
+            const data = await res.json()
+            console.log(data)
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/register/", {
                     username,

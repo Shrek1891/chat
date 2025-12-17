@@ -30,11 +30,14 @@ from account.views import LogoutAPIView
 
 from account.views import RegisterView
 
+from server.views import ServerMemebershipViewSet
+
 router = DefaultRouter()
 router.register("api/server/select", ServerListViewSet)
 router.register("api/server/category", CategoryListViewSet)
 router.register("api/messages", MessageListViewSet, basename="messages")
 router.register("api/account", AccountViewSet, basename="users")
+router.register(r"api/membership/(?P<server_id>\d+)/membership", ServerMemebershipViewSet, basename="server-membership")
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -56,4 +59,3 @@ websocket_urlpatterns = [path("<str:serverId>/<str:channelId>", WebChatConsumer.
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

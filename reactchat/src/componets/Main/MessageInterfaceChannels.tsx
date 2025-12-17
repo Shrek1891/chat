@@ -20,6 +20,7 @@ import ExploreCategories from "../SecondaryDraw/ExploreCategories.tsx";
 import ServerChanell from "../SecondaryDraw/ServerChanell.tsx";
 import {useEffect, useState} from "react";
 import {useMediaQuery} from "@mui/material";
+import JoinServerButton from "../JoinServerButton.tsx";
 
 
 const MessageInterfaceChannels = ({data}: { data: Server[] }) => {
@@ -100,6 +101,7 @@ const MessageInterfaceChannels = ({data}: { data: Server[] }) => {
                     {channelName}
                 </Typography>
                 <Box sx={{flexGrow: 1}}></Box>
+                <JoinServerButton/>
                 <Box sx={{display: {xs: "block", sm: "none"}}}>
                     <IconButton color="inherit" edge="end" onClick={toggleDrawer(true)}>
                         <MoreVertIcon/>

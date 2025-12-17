@@ -39,13 +39,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def is_valid(self, raise_exception=False):
         valid = super().is_valid(raise_exception=raise_exception)
-
         if valid:
             username = self.validated_data["username"]
             if Account.objects.filter(username=username).exists():
                 self._errors["username"] = ["username already exists"]
                 valid = False
-
         return valid
 
     def create(self, validated_data):

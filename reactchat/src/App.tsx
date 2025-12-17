@@ -12,6 +12,7 @@ import {AuthContextProvider} from "./context/AuthContext.tsx";
 import TestLogin from "./pages/TestLogin.tsx";
 import ProtectedRoute from "./services/ProtectedRoute.tsx";
 import Register from "./pages/Register.tsx";
+import MembershipProvider from "./context/MemberShip.tsx";
 
 
 function App() {
@@ -23,16 +24,19 @@ function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/server/:serverId?/:channelId?" element={
                             <ProtectedRoute>
-                                <Server/>
+                                <MembershipProvider>
+                                    <Server/>
+                                </MembershipProvider>
                             </ProtectedRoute>
-
                         }/>
                         <Route path="/explore/:categoryName" element={<Explorer/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/test-login" element={
                             <ProtectedRoute>
-                                <TestLogin/>
+                                <MembershipProvider>
+                                    <TestLogin/>
+                                </MembershipProvider>
                             </ProtectedRoute>
                         }/>
                     </Routes>

@@ -27,6 +27,7 @@ class JWTAuthMiddleWare:
 
     async def __call__(self, scope, recieve, send):
         headers_dict = dict(scope["headers"])
+        print(headers_dict)
         cookies_str = headers_dict.get(b"cookie", b"").decode()
         cookies = {cookie.split("=")[0]: cookie.split("=")[1] for cookie in cookies_str.split("; ")}
         access_token = cookies.get("access_token") or cookies.get("refresh_token")
